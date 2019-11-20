@@ -28,8 +28,9 @@
       <ul class="nav navbar-nav">  
         <li><a href="<?=base_url('admin')?>">Home</a></li>  
         <?php if(isset($_SESSION['ses_admin_id']) && $_SESSION['ses_admin_id']!=""){?>
-        <li><a href="<?=base_url('admin/user')?>">User</a></li>  
-         <li><a href="<?=base_url('admin/logout')?>">Logout</a></li>  
+          <li><a href="<?=base_url('admin/user')?>">User</a></li>  
+          <li><a href="<?=base_url('admin/service')?>">Service</a></li> 
+          <li><a href="<?=base_url('admin/logout')?>">Logout</a></li>  
          <?php } ?>
       </ul>  
        

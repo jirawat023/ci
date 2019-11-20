@@ -160,7 +160,7 @@ $row = $query->row_array();
  <br><br>
  <?php
  if($id){
-     $sql = "DELETE FROM tbl_admin WHERE admin_id='".$this->db->escape($id)."' ";
+     $sql = "DELETE FROM tbl_admin WHERE admin_id = '".$this->db->escape($id)."' ";
      if($this->db->query($sql)){
  }
  ?>

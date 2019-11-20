@@ -26,9 +26,14 @@ class Admin extends CI_Controller {
             $data['title_h1']="Page Admin Home";  
             $data['action']=$action;
             $data['id']=$id;
+            $file_model=APPPATH.'/models/admin/'.ucfirst($admin_pages).'_model.php';
+            if(file_exists($file_model))
+            {
+                $this->load->model('admin/'.$admin_pages.'_model');
+            }            
             $this->load->view('admin/admin_header', $data);  
             $this->load->view('admin/admin_'.$admin_pages,$data);  
-            $this->load->view('admin/admin_footer');  
+            $this->load->view('admin/admin_footer');
         }
     }  
      
