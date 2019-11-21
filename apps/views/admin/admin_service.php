@@ -109,6 +109,7 @@ if($this->upload->display_errors()){
 </form>
 <?php } ?>
  
+ 
 <?php if($action=="edit"){?>
 <a href="<?=base_url('admin/service')?>" class="btn btn-warning btn-sm">< Back</a>
 <br><br>
@@ -160,7 +161,17 @@ $row = $this->service_model->view($id);
         <th width="120">Images:</th>
         <td>
         <input type="file" name="service_image" >
-        <input type="hidden" name="h_service_image" value="<?=$row['service_img']?>">
+        <input type="hidden" name="h_service_image" value="<?=$row['service_img']?>">       
+<?php
+$fileCheck = './upload/'.$row['service_img'];   
+$full_fileCheck = set_realpath($fileCheck);
+if(file_exists($full_fileCheck) && is_file($full_fileCheck)){ 
+?>        
+        <img src="<?=base_url('upload/'.$row['service_img'])?>" style="width:150px;">
+        <br>
+        <input type="checkbox" name="d_service_image" value="<?=$full_fileCheck?>"> คลิกเลือกหากต้องการลบไฟล์
+        <br>
+<?php } ?>        
         </td>
     </tr>    
     <tr>

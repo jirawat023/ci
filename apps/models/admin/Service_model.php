@@ -7,6 +7,7 @@ class Service_model extends CI_Model {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('<div class="bg-danger" style="padding:3px 10px;">', '</div>');
         $this->load->library('upload');
+        $this->load->helper('path');
     }
      
     public function getlist(){
@@ -53,9 +54,21 @@ class Service_model extends CI_Model {
         $config['file_name'] = 'mypicture';  // ชื่อไฟล์ ถ้าไม่กำหนดจะเป็นตามชื่อเพิม
  
         $this->upload->initialize($config);    // เรียกใช้การตั้งค่า  
-        $this->upload->do_upload('service_image'); // ทำการอัพโหลดไฟล์จาก input file ชื่อ service_image
          
-        $file_upload=$this->input->post('h_service_image');  // เก็บชื่อไฟล์เพิมถ้ามี
+        $fileExist=$this->input->post('d_service_image');
+        if(file_exists($fileExist) && is_file($fileExist)){
+            unlink($fileExist);  
+            $file_upload="";
+        }else{
+            $file_upload=$this->input->post('h_service_image');  // เก็บชื่อไฟล์เพิมถ้ามี
+            $fileCheck = './upload/'.$file_upload;   
+            $full_fileCheck = set_realpath($fileCheck);
+            if(!file_exists($full_fileCheck) || !is_file($full_fileCheck)){
+                $file_upload="";
+            }
+        }
+                 
+        $this->upload->do_upload('service_image'); // ทำการอัพโหลดไฟล์จาก input file ชื่อ service_image        
         if(!$this->upload->display_errors()){ // ถ้าไม่มี error อัพไฟล์ได้ ให้เอาใช้ไฟล์ใส่ตัวแปร ไว้บันทึกลงฐานข้อมูล
             $file_upload=$this->upload->data('file_name');  // เก็บชื่อไฟล์ใหม่           
         }else{
