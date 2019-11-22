@@ -2,12 +2,30 @@
      
 Service  
 <br><br>
-<?php if($action==null){?>
+<?php if($action==null  || $action=='page'){?>
 <?php
-$result = $this->service_model->getlist();
+$query_str = $this->input->get();    
+$keyword = $this->input->get('keyword');    
+$result = $this->service_model->getlist($id,$query_str);
 ?>
 <a href="<?=base_url('admin/service/create')?>" class="btn btn-primary btn-sm">Create</a>
 <br><br>
+<form class="form-horizontal" action="<?=base_url('admin/service')?>" method="get">
+<div class="row">
+  <div class="col-xs-10">
+  <div class="form-group">
+        <label for="query" class="col-xs-2 text-right" style="padding-top:6px;padding-right:0px;">คำค้น</label>
+        <div class="col-xs-10">
+            <input type="text" class="form-control" name="keyword" value="<?=$keyword?>" placeholder="พิมพ์คำค้น">
+        </div>
+  </div>    
+    </div>
+  <div class="col-xs-2">
+   <button type="submit" name="btn_search" class="btn btn-primary btn-block">ค้นหา</button>    
+    </div>
+</div>
+</form>
+<br>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
         <tr>
@@ -20,12 +38,15 @@ $result = $this->service_model->getlist();
     <tbody>
         <?php
         $i_num=0;
+        if(!isset($id)){
+            $id=1;  
+        }
         if(count($result)>0){
             foreach($result as $row){
                 $i_num++;
         ?>
         <tr>
-            <td class="text-center"><?=$i_num?></td>
+            <td class="text-center"><?=(($id-1)*5)+$i_num?></td>
             <td><?=$row['service_title']?></td>
             <td class="text-center"><?=$row['service_update']?></td>
             <td class="text-center">
@@ -43,6 +64,9 @@ $result = $this->service_model->getlist();
         <?php } ?>
     </tbody>
 </table>
+<?php
+echo $this->pagination->create_links();
+?>
 <?php } ?>
  
 <?php if($action=="create"){?>

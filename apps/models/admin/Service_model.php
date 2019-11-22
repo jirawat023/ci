@@ -8,12 +8,48 @@ class Service_model extends CI_Model {
         $this->form_validation->set_error_delimiters('<div class="bg-danger" style="padding:3px 10px;">', '</div>');
         $this->load->library('upload');
         $this->load->helper('path');
+        $this->load->library('pagination');
     }
      
-    public function getlist(){
-        $query = $this->db->get('tbl_service');
+    public function getlist($id,$query_str=null){
+         
+        $config['base_url'] = base_url('admin/service/page/'); // url  เพจข้อมูลของเรา      
+        $config['per_page'] = 5;  // จำนวนแสดงต่อหน้า
+        $config['num_links'] = 2; // จำนวนเลขซ้ายขวา เช่น 1 2 3 4 5 คือหน้า 2 หลัง 2
+        $config['use_page_numbers'] = TRUE;  // แสดงเลขหน้าตามจริง เช่นหน้า 1 ก็เป็นเลข 1
+        // ส่วนของการกำหนดหน้าตาของ การแบ่งหน้า เนื่องจากเราใช้ bootstrap css จึงสามารถนำมาใช้ได้เลย
+        $config['full_tag_open'] = '<nav><ul class="pagination">'; // เปิดแท็กทั้งหมด
+        $config['full_tag_close'] = '</ul><nav>'; // ปิดแท็กทั้งหมดด้วย
+        $config['first_link'] = 'First'; // ข้อความแสดงหน้าแรก
+        $config['first_tag_open'] = '<li>'; // แท็กเปิดข้อความหน้าแรก
+        $config['first_tag_close'] = '</li>'; // แท็กปิดข้อความหน้าแรก
+        $config['first_url'] = '';  //url หน้าแรก
+        $config['last_link'] = 'Last'; // ข้อความสแดงหน้าสุดท้าย
+        $config['last_tag_open'] = '<li>';  // แท็กเปิดข้อความหน้าสุดท้าย
+        $config['last_tag_close'] = '</li>'; // แท็กปิดข้อความหน้าสุดท้าย
+        $config['next_link'] = '&gt;';  // ข้อความหน้าก่อนหน้า ในที่นี้ใช้สัญลักษณ์ <
+        $config['next_tag_open'] = '<li>';  // แท็กเปิดข้อความแสดงหน้าก่อนหน้า
+        $config['next_tag_close'] = '</li>'; // แท็กปิดข้อความแสดงหน้าก่อนหน้า
+        $config['prev_link'] = '&lt;';  // ข้อความหน้าถัดไป ในที่นี้ใช้สัญลักษณ์ >
+        $config['prev_tag_open'] = '<li>'; // แท็กเปิดข้อความหน้าถัดไป
+        $config['prev_tag_close'] = '</li>';  // แท็กปิดข้อความหน้าถัดไป
+        $config['cur_tag_open'] = '<li class="active"><a href="javascript:void();">'; // แท็กหน้าเลขเพจปัจจุบัน
+        $config['cur_tag_close'] = '</a></li>'; // แท้กปิดหน้าเพจปัจจุบัน
+        $config['num_tag_open'] = '<li>'; // แท็กเปิดหน้าเพจเลขต่างๆ
+        $config['num_tag_close'] = '</li>';  // แท็ปิดหน้าเพจเลขต่างๆ
+        $config['reuse_query_string'] = TRUE;
+         
+        if(isset($query_str['keyword']) && $query_str['keyword']!=""){
+            $this->db->like('service_title',$query_str['keyword'] );
+        }
+        $config['total_rows'] =  $this->db->count_all_results('tbl_service',FALSE);
+        $this->pagination->initialize($config);  // ตั้งค่าการกำหนด การแบ่งหน้า        
+         
+        $begin=(isset($id) && $id>1)?($id-1)*$config['per_page']:0;
+        $this->db->limit($config['per_page'], $begin);
+        $query = $this->db->get();
         return $query->result_array();
-    }    
+    }     
      
     public function create(){
         $config['upload_path'] = './upload/';  // โฟลเดอร์ ตำแหน่งเดียวกับ root ของโปรเจ็ค
